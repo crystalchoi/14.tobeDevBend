@@ -12,7 +12,7 @@ app.set('views', __dirname + '/views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+let collection;
 
 app.get('/', async (req, res) => {
 
@@ -29,12 +29,9 @@ app.get('/', async (req, res) => {
 	}
 })
 
-app.get('/write', (req, res) => {
-	res.render("write", { title: "글쓰기", message: "hello world" });
-})
-
-app.get('/detail/:id', (req, res) => {
-	res.render("detail", { title: "상세페이지", message: "hello world" });
+app.get('/detail/:id', async (req, res) => {
+	const result = await postService.getDetailPost(collection, req.params.id);
+	res.render("detail", { title: "상세페이지", post: result });
 })
 
 app.post('/write', async (req, res) => {
@@ -45,7 +42,6 @@ app.post('/write', async (req, res) => {
 })
 
 
-let collection;
 
 app.listen(8000, async () => {
 	console.log("Server started on port 8000");

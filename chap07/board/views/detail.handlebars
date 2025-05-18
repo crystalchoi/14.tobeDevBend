@@ -1,13 +1,15 @@
 <h1>[{{ title }}] 글 작성 </h1>
-<h2 class="text-xl"> 제목입니다 </h2>
-<div> 작성자 : <b> 작성자 이름</b></div>
+
+{{#with post}}
+<h2 class="text-xl"> {{title}} </h2>
+<div> 작성자 : <b>  {{name}}</b></div>
 <div>
-    조회수: 999 | 작성일시:  2025-05-01
+    조회수: {{hits}} | 작성일시: {{createdAt}}
     <button onclick="modifyPost()">수정</button>
     <button onclick="deletePost()">삭제</button>
 </div>
 <div>
-    <pre>본문입니다. 하잉호이</pre>
+    <pre>{{content}}</pre>
 </div>
 
 <section>
@@ -42,8 +44,32 @@
     </div>
 </section>
 
+{{/with}}
+
 <footer>
     <div>
         <a href="/">목록으로</a>
     </div>
 </footer>
+
+<script>
+    const postOptions = {
+			method: 'POST',
+        headers: {
+				'Content-Type': 'application/json',
+        }
+    }
+    async function modifyPost () {
+			console.log('modifying post');
+			const password = prompt("비밀번호를 입력하세요");
+			if (!password) {
+				return
+            }
+			const result = await fetch('/check-password', {
+				...postOptions, body: JSON.stringify({ id: "{{post._id}}", password: password })
+            });
+    }
+    async function deletePost () {
+        console.log('deleteing post');
+    }
+</script>
