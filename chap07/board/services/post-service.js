@@ -5,7 +5,7 @@ async function writePost(collection, post) {
 	post.hits = 0;
 	post.createdAt = new Date().toISOString();
 	const result = await collection.insertOne(post);
-	// console.log(result);
+	console.log(result);
 	return result;
 }
 
@@ -38,6 +38,18 @@ async function getDetailPost(collection, id) {
 	return result
 }
 
+
+
+async function getPostByIdAndPassword(collection, { id, password }) {
+	return  result = await collection.findOne({ _id: new ObjectId(id), password: password }, projectionOption)
+}
+
+async function updatePost(collection, id, post) {
+	const toUpdatePost = { $set: { ...post} }
+
+	return result = await collection.updateOne({ _id: new ObjectId(id) }, toUpdatePost);
+}
+
 module.exports = {
-	writePost, list, getDetailPost
+	writePost, list, getDetailPost, getPostByIdAndPassword, updatePost
 }

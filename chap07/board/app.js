@@ -41,6 +41,37 @@ app.post('/write', async (req, res) => {
 	res.redirect(`/detail/${result.insertedId}`);
 })
 
+app.get('/write', (req, res) => {
+	res.render("write", { title: "", mode: "create"});
+})
+
+
+app.get('/modify/:id', async (req, res) => {
+	const  id  = req.params.id;
+	console.log(req.params.id, id);
+	const post = await postService.getDetailPost(collection, id);
+	console.log(post);
+	res.render('write', { title: "", mode: "modify", post: post });
+})
+
+app.post('/modify', async (req, res) => {
+	const body = req.body
+	const post = {
+		title: body.title, name: body.name, password: body.password, content: body.content, createAt: new Date().toISOString()
+	}
+	const result = postService.updatePost(collection, body.id, post);
+	res.redirect(`/detail/${body.id}`);
+})
+
+app.post('/check-password', async (req, res) => {
+	const { id, password } = req.body;
+	const post = await postService.getPostByIdAndPassword(collection, { id, password });
+	if (!post) {
+		return res.status(404).send('Wrong credentials');
+	} else {
+		return res.json( { isExist: true})
+	}
+})
 
 
 app.listen(8000, async () => {

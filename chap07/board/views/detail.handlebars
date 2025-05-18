@@ -1,8 +1,7 @@
 <h1>[{{ title }}] 글 작성 </h1>
-
 {{#with post}}
 <h2 class="text-xl"> {{title}} </h2>
-<div> 작성자 : <b>  {{name}}</b></div>
+<div> 작성자 : <b>{{name}}</b></div>
 <div>
     조회수: {{hits}} | 작성일시: {{createdAt}}
     <button onclick="modifyPost()">수정</button>
@@ -68,6 +67,15 @@
 			const result = await fetch('/check-password', {
 				...postOptions, body: JSON.stringify({ id: "{{post._id}}", password: password })
             });
+			const data = await  result.json();
+            console.log(result.json());
+			if (data.isExist) {
+				document.location = "/modify/{{post._id}}";
+				console.log('Goto: /modify/:postId');
+            } else {
+				alert("게시판 invalid password")
+            }
+        console.log('end of modifying post');
     }
     async function deletePost () {
         console.log('deleteing post');
