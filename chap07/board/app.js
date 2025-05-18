@@ -56,21 +56,34 @@ app.get('/modify/:id', async (req, res) => {
 
 app.post('/modify', async (req, res) => {
 	const body = req.body
-	const post = {
-		title: body.title, name: body.name, password: body.password, content: body.content, createAt: new Date().toISOString()
+	let post =  {
+		title: body.title, name: body.name, content: body.content, createdAt: new Date().toISOString()
+	}
+	if (body.password) {
+		post = { ...post, password: body.password };
 	}
 	const result = postService.updatePost(collection, body.id, post);
 	res.redirect(`/detail/${body.id}`);
+})
+
+app.delete('/delete', async (req, res) => {
+	const { id, password } = req.body;
+
+	const result = postService.deletePost(collection, id, password);
+	if (result !== 1) {
+		return res.json( { isSuccess: false, error: "No such post" });
+	}  else {
+		return res.json( { isSuccess: true});
+	}
 })
 
 app.post('/check-password', async (req, res) => {
 	const { id, password } = req.body;
 	const post = await postService.getPostByIdAndPassword(collection, { id, password });
 	if (!post) {
-		return res.status(404).send('Wrong credentials');
-	} else {
-		return res.json( { isExist: true})
+		return res.status(404).send({ message: "wrong password" } );
 	}
+	return res.json( { isExist: true} )
 })
 
 
@@ -81,7 +94,6 @@ app.listen(8000, async () => {
 	collection = mongoClient.db().collection("board");
 	console.log("MongoDB Connected");
 })
-
 
 app.engine('handlebars',
 	handlebars.create({ helpers: require("./configs/handlebars-helpers"), }).engine
