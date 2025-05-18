@@ -12,35 +12,39 @@
 </div>
 
 <section>
-    <div> <h3> 3개의 댓글이 있습니다.</h3>
+    <div>
+        <h3> {{ lengthOfList comments}}개의 댓글이 있습니다.</h3>
     </div>
 
     <form method="POST" action="/write-comment">
+        <input type="hidden" name="id" value="{{_id}}" />
         <div>
             <div>
                 <input type="text" name="name" placeholder="이름" />
                 <input type="password" name="password" placeholder="비밀번호" autoComplete="off"  />
             </div>
             <div>
-                <textarea cols="30" rows="10" name="comment" placeholder="댓글을 입력하세요"></textarea>
-                <br />
-                <br />
+                <textarea cols="30" rows="3" name="comment" placeholder="댓글을 입력하세요"></textarea>
                 <button> 댓글쓰기</button>
+                <br />
+                <br />
             </div>
         </div>
     </form>
 </section>
 
 <section>
-    <div>
-        <div>작성자: <b>댓글작성자</b></div>
-        <div>작성일시: 2025-03-01
-            <button onclick="deleteComment('1')">삭제</button>
-        </div>
+    {{#each comments}}
         <div>
-            <pre>{{comment}}</pre>
+            <div>작성자: <b>{{name}}</b></div>
+            <div>작성일시: {{dateString createdAt}}
+                <button onclick="deleteComment('{{idx}}')">삭제</button>
+            </div>
+            <div>
+                <pre>{{comment}}</pre>
+            </div>
         </div>
-    </div>
+    {{/each}}
 </section>
 
 {{/with}}

@@ -38,21 +38,24 @@ async function getDetailPost(collection, id) {
 	return result
 }
 
+async function getPostById(collection, id) {
+	return await collection.findOne({ _id: new ObjectId(id) });
+}
 
 
 async function getPostByIdAndPassword(collection, { id, password }) {
-	return result = await collection.findOne({ _id: new ObjectId(id), password: password }, projectionOption)
+	return await collection.findOne({ _id: new ObjectId(id), password: password }, projectionOption)
 }
 
 async function updatePost(collection, id, post) {
 	const toUpdatePost = { $set: { ...post} }
 
-	return result = await collection.updateOne({ _id: new ObjectId(id) }, toUpdatePost);
+	return await collection.updateOne({ _id: new ObjectId(id) }, toUpdatePost);
 }
 
 async function deletePost(collection, id, password) {
-	return result = await collection.deleteOne({ _id: new ObjectId(id), password: password });
+	return await collection.deleteOne({ _id: new ObjectId(id), password: password });
 }
 module.exports = {
-	writePost, list, getDetailPost, getPostByIdAndPassword, updatePost, deletePost
+	writePost, list, getDetailPost, getPostById, getPostByIdAndPassword, updatePost, deletePost
 }

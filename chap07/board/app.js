@@ -87,6 +87,20 @@ app.post('/check-password', async (req, res) => {
 })
 
 
+app.post('/write-comment', async (req, res) => {
+	const { id, name, password,  comment } = req.body;
+	const post = await postService.getPostById(collection, id);
+
+	if (post.comments) {
+		post.comments.push({ idx: post.comments.length + 1, name, password, comment, createdAt: new Date().toISOString() });
+	} else {
+		post.comments = [{ idx: 1, name, password, comment, createdAt: new Date().toISOString() }];
+	}
+
+	await postService.updatePost(collection, id, post);
+	return res.redirect(`/detail/${id}`);
+})
+
 app.listen(8000, async () => {
 	console.log("Server started on port 8000");
 	const mongoClient = await mongodbConnection();
