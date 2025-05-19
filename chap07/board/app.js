@@ -1,12 +1,13 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
 const {MongoClient} = require("mongodb");
+const { ObjectId } = require('mongodb');
 const mongodbConnection = require('./configs/mongodb-connection');
 const postService = require('./services/post-service');
 const app = express();
 
-app.engine('handlebars', handlebars.engine());
-app.set("view engine", "handlebars");
+app.engine('hbs', handlebars.engine());
+app.set("view engine", "hbs");
 app.set('views', __dirname + '/views');
 
 app.use(express.json());
@@ -101,6 +102,21 @@ app.post('/write-comment', async (req, res) => {
 	return res.redirect(`/detail/${id}`);
 })
 
+app.delete('/delete-comment', async (req, res) => {
+	const { id, idx, password } = req.body
+	const post = await collection.findOne({ _id: new ObjectId(id),
+		comments: { $elemMatch: {idx: parseInt(idx), password}}},
+		postService.projectionOption);
+
+	if (!post) {
+		return res.json( { isSuccess: false, error: "No such comment" } );
+	}
+
+	post.comments = post.comments.filter( (comment) => comment.idx !== parseInt(idx));
+	await postService.updatePost(collection, id, post);
+	return res.json({ isSuccess: true, error: "Comment deleted" });
+})
+
 app.listen(8000, async () => {
 	console.log("Server started on port 8000");
 	const mongoClient = await mongodbConnection();
@@ -109,6 +125,7 @@ app.listen(8000, async () => {
 	console.log("MongoDB Connected");
 })
 
-app.engine('handlebars',
-	handlebars.create({ helpers: require("./configs/handlebars-helpers"), }).engine
+app.engine('hbs',
+	handlebars.create({ extname: '.hbs' ,
+		helpers: require("./configs/handlebars-helpers"), }).engine
 );

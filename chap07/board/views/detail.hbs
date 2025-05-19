@@ -21,7 +21,7 @@
         <div>
             <div>
                 <input type="text" name="name" placeholder="이름" />
-                <input type="password" name="password" placeholder="비밀번호" autoComplete="off"  />
+                <input type="password" name="password" placeholder="비밀번호" />
             </div>
             <div>
                 <textarea cols="30" rows="3" name="comment" placeholder="댓글을 입력하세요"></textarea>
@@ -114,8 +114,8 @@
         })
 
         const data = await result.json();
-        if (data.isSuccess) {
-            alert("댓글 삭제 실패")
+        if (!data.isSuccess) {
+            alert(`댓글 삭제 실패 ${data.error}`)
             return
         }
 

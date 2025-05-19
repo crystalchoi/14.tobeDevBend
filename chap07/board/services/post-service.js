@@ -57,5 +57,5 @@ async function deletePost(collection, id, password) {
 	return await collection.deleteOne({ _id: new ObjectId(id), password: password });
 }
 module.exports = {
-	writePost, list, getDetailPost, getPostById, getPostByIdAndPassword, updatePost, deletePost
+	writePost, list, getDetailPost, getPostById, getPostByIdAndPassword, updatePost, deletePost, projectionOption
 }
